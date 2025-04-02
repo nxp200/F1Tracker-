@@ -3,28 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formula 1 Stats Tracker</title>
+    <title>F1 Stats Dashboard</title>
     <style>
         :root {
-            --primary-bg: #121212;
-            --secondary-bg: #212121;
-            --card-bg: #2a2a2a;
-            --text-primary: #f5f5f5;
-            --text-secondary: #aaaaaa;
-            --accent-red: #e10600;
-            --accent-hover: #ff1a00;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', Arial, sans-serif;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #f5f5f5;
+            --accent-color: #e10600;
+            --secondary-color: #333333;
         }
         
         body {
-            background-color: var(--primary-bg);
-            color: var(--text-primary);
+            font-family: 'Titillium Web', 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
             line-height: 1.6;
         }
         
@@ -39,8 +33,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--accent-red);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
         }
         
         .logo {
@@ -48,53 +42,42 @@
             align-items: center;
         }
         
-        .logo img {
-            height: 50px;
+        .logo h1 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+        
+        .logo-image {
+            height: 40px;
             margin-right: 10px;
         }
         
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
         .season-selector {
-            background-color: var(--secondary-bg);
-            color: var(--text-primary);
-            border: 1px solid var(--accent-red);
-            padding: 8px 15px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border: 1px solid var(--accent-color);
             border-radius: 4px;
+            font-size: 16px;
             cursor: pointer;
-            font-weight: 500;
+        }
+        
+        .season-selector:focus {
             outline: none;
-        }
-        
-        .season-selector:hover {
-            border-color: var(--accent-hover);
-        }
-        
-        .loading {
-            text-align: center;
-            margin: 50px 0;
-            font-size: 18px;
-            color: var(--text-secondary);
-        }
-        
-        .section {
-            margin-bottom: 40px;
-        }
-        
-        .section-title {
-            margin-bottom: 20px;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--accent-red);
+            box-shadow: 0 0 0 2px rgba(225, 6, 0, 0.3);
         }
         
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         .card {
@@ -102,122 +85,134 @@
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
         }
         
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--accent-red);
+        .card h2 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--accent-color);
             padding-bottom: 10px;
+            color: var(--accent-color);
         }
         
-        .card-content {
-            color: var(--text-secondary);
+        .card h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: var(--text-color);
         }
         
-        .standings-table {
+        .loading {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+            padding: 20px;
+        }
+        
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
         }
         
-        .standings-table th, .standings-table td {
+        th, td {
             padding: 10px;
             text-align: left;
-            border-bottom: 1px solid var(--secondary-bg);
+            border-bottom: 1px solid var(--secondary-color);
         }
         
-        .standings-table th {
-            color: var(--text-primary);
+        th {
             font-weight: 600;
+            color: var(--accent-color);
         }
         
-        .race-info {
+        .next-race {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .race-date {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-        
-        .highlight {
-            color: var(--accent-red);
-            font-weight: 600;
-        }
-        
-        .countdown {
-            background-color: var(--accent-red);
-            color: white;
-            border-radius: 4px;
-            padding: 10px 15px;
-            margin-top: 15px;
-            font-weight: 600;
+            justify-content: center;
+            padding: 20px;
             text-align: center;
         }
         
-        .next-race-card {
-            grid-column: 1 / -1;
-            display: flex;
-            flex-direction: column;
-            background-image: linear-gradient(to right, rgba(42, 42, 42, 0.9), rgba(42, 42, 42, 0.75));
-            background-size: cover;
-            padding: 25px;
+        .countdown {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin: 10px 0;
         }
         
-        .next-race-details {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .race-date {
+            font-size: 1.1em;
+            margin: 10px 0;
         }
         
-        .next-race-info {
-            flex: 2;
-        }
-        
-        .next-race-time {
-            flex: 1;
-            text-align: right;
-        }
-        
-        .flag {
+        .driver-position {
+            display: inline-block;
             width: 24px;
-            height: 16px;
-            vertical-align: middle;
-            margin-right: 8px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 12px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            margin-right: 10px;
         }
         
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .next-race-details {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .next-race-time {
-                text-align: left;
-                margin-top: 15px;
-            }
+        .position-1 {
+            background-color: gold;
+            color: black;
+        }
+        
+        .position-2 {
+            background-color: silver;
+            color: black;
+        }
+        
+        .position-3 {
+            background-color: #cd7f32;
+            color: black;
+        }
+        
+        .team-color {
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        .error-message {
+            color: var(--accent-color);
+            text-align: center;
+            padding: 20px;
+            font-weight: bold;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">
-                <img src="/api/placeholder/100/50" alt="F1 Logo">
-                <h1>Formula 1 Stats Tracker</h1>
+                <svg class="logo-image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 30" width="120" height="30">
+                    <path d="M0 0h30v30H0z" fill="#e10600"/>
+                    <path d="M3 3h24v24H3z" fill="#121212"/>
+                    <path d="M6 6h18v18H6z" fill="#e10600"/>
+                    <path d="M10 10h10v10H10z" fill="#121212"/>
+                    <path d="M35 15h10v3H35z" fill="#ffffff"/>
+                    <path d="M50 7h3v16h-3z" fill="#ffffff"/>
+                    <path d="M50 7h10v3H50z" fill="#ffffff"/>
+                    <path d="M50 15h8v3h-8z" fill="#ffffff"/>
+                    <path d="M50 20h10v3H50z" fill="#ffffff"/>
+                    <path d="M65 7h10v3H65z" fill="#ffffff"/>
+                    <path d="M65 7h3v16h-3z" fill="#ffffff"/>
+                    <path d="M80 7h13v3H80z" fill="#ffffff"/>
+                    <path d="M80 7h3v16h-3z" fill="#ffffff"/>
+                    <path d="M80 20h13v3H80z" fill="#ffffff"/>
+                    <path d="M100 7h3v16h-3z" fill="#ffffff"/>
+                    <path d="M108 7h3v16h-3z" fill="#ffffff"/>
+                    <path d="M100 7h11v3h-11z" fill="#ffffff"/>
+                    <path d="M100 20h11v3h-11z" fill="#ffffff"/>
+                </svg>
+                <h1>F1 Stats Dashboard</h1>
             </div>
             <select id="seasonSelector" class="season-selector">
                 <option value="2022">2022 Season</option>
@@ -227,464 +222,341 @@
             </select>
         </header>
         
-        <div id="loading" class="loading">Loading Formula 1 data...</div>
-        
-        <main id="content" style="display: none;">
-            <section class="section">
-                <h2 class="section-title">Next Race</h2>
-                <div class="card next-race-card" id="nextRace">
-                    <!-- Next race content will be inserted here -->
-                </div>
-            </section>
+        <div class="grid">
+            <div class="card">
+                <h2>Driver Standings</h2>
+                <div id="driverStandings" class="loading">Loading driver standings...</div>
+            </div>
             
-            <section class="section">
-                <h2 class="section-title">Driver Standings</h2>
-                <div class="card">
-                    <h3 class="card-title">Top Drivers</h3>
-                    <div class="card-content">
-                        <table class="standings-table" id="driverStandings">
-                            <thead>
-                                <tr>
-                                    <th>Pos</th>
-                                    <th>Driver</th>
-                                    <th>Team</th>
-                                    <th>Points</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Driver standings will be inserted here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+            <div class="card">
+                <h2>Constructor Standings</h2>
+                <div id="constructorStandings" class="loading">Loading constructor standings...</div>
+            </div>
             
-            <section class="section">
-                <h2 class="section-title">Constructor Standings</h2>
-                <div class="card">
-                    <h3 class="card-title">Team Rankings</h3>
-                    <div class="card-content">
-                        <table class="standings-table" id="constructorStandings">
-                            <thead>
-                                <tr>
-                                    <th>Pos</th>
-                                    <th>Team</th>
-                                    <th>Points</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Constructor standings will be inserted here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+            <div class="card">
+                <h2>Next Race</h2>
+                <div id="nextRace" class="loading">Loading next race information...</div>
+            </div>
             
-            <section class="section">
-                <h2 class="section-title">Upcoming Races</h2>
-                <div class="grid" id="upcomingRaces">
-                    <!-- Upcoming races will be inserted here -->
-                </div>
-            </section>
-            
-            <section class="section">
-                <h2 class="section-title">Completed Races</h2>
-                <div class="grid" id="completedRaces">
-                    <!-- Completed races will be inserted here -->
-                </div>
-            </section>
-        </main>
+            <div class="card">
+                <h2>Season Calendar</h2>
+                <div id="raceSchedule" class="loading">Loading race schedule...</div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Constants and configuration
-        const API_BASE_URL = 'https://v1.formula-1.api-sports.io';
-        const API_KEY = 'free_demo_key'; // This is a placeholder - normally would use environment variables
-        const DEFAULT_SEASON = '2025';
+        // Team colors mapping
+        const teamColors = {
+            'Mercedes': '#00D2BE',
+            'Red Bull': '#0600EF',
+            'Ferrari': '#DC0000',
+            'McLaren': '#FF8700',
+            'Alpine': '#0090FF',
+            'AlphaTauri': '#2B4562',
+            'Aston Martin': '#006F62',
+            'Williams': '#005AFF',
+            'Alfa Romeo': '#900000',
+            'Haas F1 Team': '#FFFFFF',
+            'Racing Point': '#F596C8',
+            'Renault': '#FFF500',
+            'Toro Rosso': '#469BFF',
+            'Sauber': '#9B0000',
+            'Force India': '#FF80C7',
+            'Lotus F1': '#FFB800',
+            'Marussia': '#6E0000',
+            'Caterham': '#00FF00',
+            'RB': '#6692FF',
+            'Visa Cash App RB': '#6692FF',
+            'Kick Sauber': '#52E252',
+            'Sauber': '#52E252',
+            'RB F1 Team': '#6692FF',
+            'Alpine F1 Team': '#0090FF',
+        };
         
-        // DOM Elements
-        const seasonSelector = document.getElementById('seasonSelector');
-        const loadingElement = document.getElementById('loading');
-        const contentElement = document.getElementById('content');
-        const nextRaceElement = document.getElementById('nextRace');
-        const driverStandingsElement = document.getElementById('driverStandings').querySelector('tbody');
-        const constructorStandingsElement = document.getElementById('constructorStandings').querySelector('tbody');
-        const upcomingRacesElement = document.getElementById('upcomingRaces');
-        const completedRacesElement = document.getElementById('completedRaces');
+        // Default constructor if not found in mapping
+        const defaultTeamColor = '#CCCCCC';
         
-        // Initialize current season
-        let currentSeason = seasonSelector.value || DEFAULT_SEASON;
+        // Global variables
+        let selectedSeason = '2025';
+        let countdownInterval;
         
-        // Cache for API responses
-        const cache = {};
-        
-        // Event listeners
-        seasonSelector.addEventListener('change', () => {
-            currentSeason = seasonSelector.value;
-            loadF1Data(currentSeason);
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up season selector change event
+            const seasonSelector = document.getElementById('seasonSelector');
+            seasonSelector.addEventListener('change', (e) => {
+                selectedSeason = e.target.value;
+                loadAllData();
+            });
+            
+            // Initial data load
+            loadAllData();
         });
         
-        // Helper function to format dates according to user's locale
-        function formatDateTime(dateString) {
-            const date = new Date(dateString);
-            return {
-                date: date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }),
-                time: date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
-            };
+        // Function to load all data
+        function loadAllData() {
+            clearInterval(countdownInterval); // Clear any existing countdown timer
+            loadDriverStandings();
+            loadConstructorStandings();
+            loadNextRace();
+            loadRaceSchedule();
         }
         
-        // Helper function to calculate time until next race
-        function getTimeUntilRace(raceDate) {
-            const now = new Date();
-            const race = new Date(raceDate);
-            const diff = race - now;
-            
-            if (diff < 0) return 'Race has started';
-            
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            
-            return `${days}d ${hours}h ${minutes}m`;
-        }
-        
-        // Main API fetch function with error handling and caching
-        async function fetchF1Data(endpoint, season) {
-            const cacheKey = `${endpoint}_${season}`;
-            
-            if (cache[cacheKey]) {
-                return cache[cacheKey];
+        // Function to fetch data from API
+        async function fetchF1Data(endpoint) {
+            try {
+                // Using the Formula 1 API
+                const response = await fetch(`https://ergast.com/api/f1/${selectedSeason}/${endpoint}.json`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return null;
             }
+        }
+        
+        // Load driver standings
+        async function loadDriverStandings() {
+            const container = document.getElementById('driverStandings');
+            container.innerHTML = '<div class="loading">Loading driver standings...</div>';
             
             try {
-                // For demo purposes, we'll use mock data
-                // In a real app, you would use:
-                // const response = await fetch(`${API_BASE_URL}/${endpoint}?season=${season}`, {
-                //    headers: { 'x-apisports-key': API_KEY }
-                // });
+                const data = await fetchF1Data('driverStandings');
                 
-                // This is mock data since we're not actually connecting to an API
-                const mockData = getMockData(endpoint, season);
-                cache[cacheKey] = mockData;
-                return mockData;
+                if (!data || !data.MRData || !data.MRData.StandingsTable || !data.MRData.StandingsTable.StandingsLists || data.MRData.StandingsTable.StandingsLists.length === 0) {
+                    container.innerHTML = `<div class="error-message">Driver standings not available for ${selectedSeason} season.</div>`;
+                    return;
+                }
+                
+                const standings = data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+                
+                let html = `
+                    <table>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Driver</th>
+                            <th>Team</th>
+                            <th>Points</th>
+                        </tr>
+                `;
+                
+                standings.forEach(driver => {
+                    const teamName = driver.Constructors[0].name;
+                    const teamColor = teamColors[teamName] || defaultTeamColor;
+                    
+                    const positionClass = driver.position <= 3 ? `position-${driver.position}` : '';
+                    
+                    html += `
+                        <tr>
+                            <td><div class="driver-position ${positionClass}">${driver.position}</div></td>
+                            <td>${driver.Driver.givenName} ${driver.Driver.familyName}</td>
+                            <td><span class="team-color" style="background-color: ${teamColor};"></span>${teamName}</td>
+                            <td>${driver.points}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</table>';
+                container.innerHTML = html;
             } catch (error) {
-                console.error('Error fetching F1 data:', error);
-                throw error;
+                console.error('Error loading driver standings:', error);
+                container.innerHTML = '<div class="error-message">Failed to load driver standings</div>';
             }
         }
         
-        // Create mock data for demonstration
-        function getMockData(endpoint, season) {
-            // Current date for calculations
-            const now = new Date();
-            const currentYear = parseInt(season);
-            
-            switch (endpoint) {
-                case 'races':
-                    return {
-                        response: [
-                            {
-                                id: 1,
-                                name: 'Bahrain Grand Prix',
-                                circuit: { name: 'Bahrain International Circuit' },
-                                country: { name: 'Bahrain', code: 'BH' },
-                                date: `${currentYear}-03-02T13:00:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-03-02`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                            {
-                                id: 2,
-                                name: 'Saudi Arabian Grand Prix',
-                                circuit: { name: 'Jeddah Corniche Circuit' },
-                                country: { name: 'Saudi Arabia', code: 'SA' },
-                                date: `${currentYear}-03-09T16:00:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-03-09`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                            {
-                                id: 3,
-                                name: 'Australian Grand Prix',
-                                circuit: { name: 'Albert Park Circuit' },
-                                country: { name: 'Australia', code: 'AU' },
-                                date: `${currentYear}-03-23T05:00:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-03-23`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                            {
-                                id: 4,
-                                name: 'Japanese Grand Prix',
-                                circuit: { name: 'Suzuka Circuit' },
-                                country: { name: 'Japan', code: 'JP' },
-                                date: `${currentYear}-04-13T06:00:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-04-13`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                            {
-                                id: 5,
-                                name: 'Miami Grand Prix',
-                                circuit: { name: 'Miami International Autodrome' },
-                                country: { name: 'USA', code: 'US' },
-                                date: `${currentYear}-05-05T19:30:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-05-05`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                            {
-                                id: 6,
-                                name: 'Monaco Grand Prix',
-                                circuit: { name: 'Circuit de Monaco' },
-                                country: { name: 'Monaco', code: 'MC' },
-                                date: `${currentYear}-05-26T13:00:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-05-26`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                            {
-                                id: 7,
-                                name: 'British Grand Prix',
-                                circuit: { name: 'Silverstone Circuit' },
-                                country: { name: 'Great Britain', code: 'GB' },
-                                date: `${currentYear}-07-07T14:00:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-07-07`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                            {
-                                id: 8,
-                                name: 'Belgian Grand Prix',
-                                circuit: { name: 'Circuit de Spa-Francorchamps' },
-                                country: { name: 'Belgium', code: 'BE' },
-                                date: `${currentYear}-07-28T13:00:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-07-28`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                            {
-                                id: 9,
-                                name: 'Italian Grand Prix',
-                                circuit: { name: 'Autodromo Nazionale Monza' },
-                                country: { name: 'Italy', code: 'IT' },
-                                date: `${currentYear}-09-01T13:00:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-09-01`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                            {
-                                id: 10,
-                                name: 'United States Grand Prix',
-                                circuit: { name: 'Circuit of the Americas' },
-                                country: { name: 'USA', code: 'US' },
-                                date: `${currentYear}-10-20T19:00:00Z`,
-                                season: currentYear,
-                                type: 'Race',
-                                status: currentYear < now.getFullYear() || (currentYear === now.getFullYear() && new Date(`${currentYear}-10-20`) < now) ? 'Completed' : 'Scheduled'
-                            },
-                        ]
-                    };
-                
-                case 'standings/drivers':
-                    return {
-                        response: [
-                            { position: 1, driver: { name: 'Max Verstappen', abbr: 'VER' }, team: { name: 'Red Bull Racing' }, points: 304 },
-                            { position: 2, driver: { name: 'Lando Norris', abbr: 'NOR' }, team: { name: 'McLaren' }, points: 265 },
-                            { position: 3, driver: { name: 'Charles Leclerc', abbr: 'LEC' }, team: { name: 'Ferrari' }, points: 250 },
-                            { position: 4, driver: { name: 'Lewis Hamilton', abbr: 'HAM' }, team: { name: 'Mercedes' }, points: 235 },
-                            { position: 5, driver: { name: 'Oscar Piastri', abbr: 'PIA' }, team: { name: 'McLaren' }, points: 220 },
-                            { position: 6, driver: { name: 'Carlos Sainz', abbr: 'SAI' }, team: { name: 'Ferrari' }, points: 205 },
-                            { position: 7, driver: { name: 'George Russell', abbr: 'RUS' }, team: { name: 'Mercedes' }, points: 195 },
-                            { position: 8, driver: { name: 'Sergio Perez', abbr: 'PER' }, team: { name: 'Red Bull Racing' }, points: 185 },
-                            { position: 9, driver: { name: 'Fernando Alonso', abbr: 'ALO' }, team: { name: 'Aston Martin' }, points: 110 },
-                            { position: 10, driver: { name: 'Lance Stroll', abbr: 'STR' }, team: { name: 'Aston Martin' }, points: 86 }
-                        ]
-                    };
-                
-                case 'standings/teams':
-                    return {
-                        response: [
-                            { position: 1, team: { name: 'Red Bull Racing' }, points: 489 },
-                            { position: 2, team: { name: 'McLaren' }, points: 485 },
-                            { position: 3, team: { name: 'Ferrari' }, points: 455 },
-                            { position: 4, team: { name: 'Mercedes' }, points: 430 },
-                            { position: 5, team: { name: 'Aston Martin' }, points: 196 },
-                            { position: 6, team: { name: 'Alpine' }, points: 86 },
-                            { position: 7, team: { name: 'Williams' }, points: 45 },
-                            { position: 8, team: { name: 'RB' }, points: 28 },
-                            { position: 9, team: { name: 'Haas F1 Team' }, points: 26 },
-                            { position: 10, team: { name: 'Sauber' }, points: 10 }
-                        ]
-                    };
-                
-                default:
-                    return { response: [] };
-            }
-        }
-        
-        // Render F1 data to the DOM
-        function renderF1Data(races, drivers, constructors) {
-            // Sort races by date
-            const sortedRaces = [...races].sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            // Filter upcoming and completed races
-            const now = new Date();
-            const upcomingRaces = sortedRaces.filter(race => new Date(race.date) > now);
-            const completedRaces = sortedRaces.filter(race => new Date(race.date) <= now);
-            
-            // Render next race
-            if (upcomingRaces.length > 0) {
-                const nextRace = upcomingRaces[0];
-                const { date, time } = formatDateTime(nextRace.date);
-                const countdown = getTimeUntilRace(nextRace.date);
-                
-                nextRaceElement.innerHTML = `
-                    <h3 class="card-title">${nextRace.name}</h3>
-                    <div class="next-race-details">
-                        <div class="next-race-info">
-                            <p>
-                                <img src="/api/placeholder/24/16" alt="${nextRace.country.name} flag" class="flag">
-                                <span class="highlight">${nextRace.circuit.name}</span>, ${nextRace.country.name}
-                            </p>
-                            <p class="race-date">${date}</p>
-                        </div>
-                        <div class="next-race-time">
-                            <p class="highlight">${time}</p>
-                            <div class="countdown">
-                                Race starts in: ${countdown}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                nextRaceElement.innerHTML = `
-                    <div class="card-content">
-                        <p>No upcoming races scheduled for this season.</p>
-                    </div>
-                `;
-            }
-            
-            // Render driver standings
-            driverStandingsElement.innerHTML = drivers.slice(0, 10).map(driver => `
-                <tr>
-                    <td>${driver.position}</td>
-                    <td><strong>${driver.driver.name}</strong></td>
-                    <td>${driver.team.name}</td>
-                    <td>${driver.points}</td>
-                </tr>
-            `).join('');
-            
-            // Render constructor standings
-            constructorStandingsElement.innerHTML = constructors.slice(0, 10).map(constructor => `
-                <tr>
-                    <td>${constructor.position}</td>
-                    <td><strong>${constructor.team.name}</strong></td>
-                    <td>${constructor.points}</td>
-                </tr>
-            `).join('');
-            
-            // Render upcoming races
-            upcomingRacesElement.innerHTML = upcomingRaces.slice(1, 5).map(race => {
-                const { date, time } = formatDateTime(race.date);
-                return `
-                    <div class="card">
-                        <h3 class="card-title">${race.name}</h3>
-                        <div class="card-content">
-                            <div class="race-info">
-                                <img src="/api/placeholder/24/16" alt="${race.country.name} flag" class="flag">
-                                <span>${race.circuit.name}</span>
-                            </div>
-                            <p class="race-date">${date}</p>
-                            <p class="highlight">${time}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            if (upcomingRaces.length <= 1) {
-                upcomingRacesElement.innerHTML = `
-                    <div class="card">
-                        <div class="card-content">
-                            <p>No more races scheduled for this season.</p>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Render completed races
-            completedRacesElement.innerHTML = completedRaces.slice(-4).map(race => {
-                const { date } = formatDateTime(race.date);
-                return `
-                    <div class="card">
-                        <h3 class="card-title">${race.name}</h3>
-                        <div class="card-content">
-                            <div class="race-info">
-                                <img src="/api/placeholder/24/16" alt="${race.country.name} flag" class="flag">
-                                <span>${race.circuit.name}</span>
-                            </div>
-                            <p class="race-date">${date}</p>
-                            <p>Status: <span class="highlight">Completed</span></p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            if (completedRaces.length === 0) {
-                completedRacesElement.innerHTML = `
-                    <div class="card">
-                        <div class="card-content">
-                            <p>No races completed yet for this season.</p>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Show content and hide loading
-            loadingElement.style.display = 'none';
-            contentElement.style.display = 'block';
-        }
-        
-        // Main function to load F1 data
-        async function loadF1Data(season) {
-            // Show loading, hide content
-            loadingElement.style.display = 'block';
-            contentElement.style.display = 'none';
+        // Load constructor standings
+        async function loadConstructorStandings() {
+            const container = document.getElementById('constructorStandings');
+            container.innerHTML = '<div class="loading">Loading constructor standings...</div>';
             
             try {
-                // Fetch all required data
-                const [racesData, driversData, constructorsData] = await Promise.all([
-                    fetchF1Data('races', season),
-                    fetchF1Data('standings/drivers', season),
-                    fetchF1Data('standings/teams', season)
-                ]);
+                const data = await fetchF1Data('constructorStandings');
                 
-                // Render data to DOM
-                renderF1Data(
-                    racesData.response,
-                    driversData.response,
-                    constructorsData.response
-                );
+                if (!data || !data.MRData || !data.MRData.StandingsTable || !data.MRData.StandingsTable.StandingsLists || data.MRData.StandingsTable.StandingsLists.length === 0) {
+                    container.innerHTML = `<div class="error-message">Constructor standings not available for ${selectedSeason} season.</div>`;
+                    return;
+                }
+                
+                const standings = data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
+                
+                let html = `
+                    <table>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Team</th>
+                            <th>Points</th>
+                        </tr>
+                `;
+                
+                standings.forEach(constructor => {
+                    const teamName = constructor.Constructor.name;
+                    const teamColor = teamColors[teamName] || defaultTeamColor;
+                    
+                    const positionClass = constructor.position <= 3 ? `position-${constructor.position}` : '';
+                    
+                    html += `
+                        <tr>
+                            <td><div class="driver-position ${positionClass}">${constructor.position}</div></td>
+                            <td><span class="team-color" style="background-color: ${teamColor};"></span>${teamName}</td>
+                            <td>${constructor.points}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</table>';
+                container.innerHTML = html;
             } catch (error) {
-                loadingElement.textContent = 'Error loading F1 data. Please try again later.';
-                console.error('Error:', error);
+                console.error('Error loading constructor standings:', error);
+                container.innerHTML = '<div class="error-message">Failed to load constructor standings</div>';
             }
         }
         
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', () => {
-            loadF1Data(currentSeason);
+        // Load next race information
+        async function loadNextRace() {
+            const container = document.getElementById('nextRace');
+            container.innerHTML = '<div class="loading">Loading next race information...</div>';
             
-            // Update countdown timer every minute
-            setInterval(() => {
-                if (upcomingRaces && upcomingRaces.length > 0) {
-                    const countdownElement = document.querySelector('.countdown');
-                    if (countdownElement) {
-                        countdownElement.textContent = `Race starts in: ${getTimeUntilRace(upcomingRaces[0].date)}`;
+            try {
+                const data = await fetchF1Data('');
+                
+                if (!data || !data.MRData || !data.MRData.RaceTable || !data.MRData.RaceTable.Races || data.MRData.RaceTable.Races.length === 0) {
+                    container.innerHTML = `<div class="error-message">Race schedule not available for ${selectedSeason} season.</div>`;
+                    return;
+                }
+                
+                const races = data.MRData.RaceTable.Races;
+                const today = new Date();
+                
+                // Find the next race (first race in the future)
+                let nextRace = null;
+                for (const race of races) {
+                    const raceDate = new Date(`${race.date}T${race.time || '00:00:00Z'}`);
+                    if (raceDate > today) {
+                        nextRace = race;
+                        break;
                     }
                 }
-            }, 60000);
-        });
+                
+                if (!nextRace) {
+                    // If no future race is found, take the last race of the season
+                    container.innerHTML = '<div class="next-race">No upcoming races for this season</div>';
+                    return;
+                }
+                
+                // Parse race date and time
+                const raceDateTime = new Date(`${nextRace.date}T${nextRace.time || '00:00:00Z'}`);
+                
+                // Format the date and time in the user's locale
+                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const timeOptions = { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' };
+                
+                const localDate = raceDateTime.toLocaleDateString(undefined, dateOptions);
+                const localTime = raceDateTime.toLocaleTimeString(undefined, timeOptions);
+                
+                let html = `
+                    <div class="next-race">
+                        <h3>${nextRace.raceName}</h3>
+                        <p>${nextRace.Circuit.circuitName}, ${nextRace.Circuit.Location.locality}, ${nextRace.Circuit.Location.country}</p>
+                        <p class="race-date">Race Date: ${localDate}</p>
+                        <p class="race-date">Race Time: ${localTime}</p>
+                        <div id="countdown" class="countdown"></div>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+                
+                // Set up countdown timer
+                startCountdown(raceDateTime);
+                
+            } catch (error) {
+                console.error('Error loading next race:', error);
+                container.innerHTML = '<div class="error-message">Failed to load next race information</div>';
+            }
+        }
+        
+        // Countdown timer function
+        function startCountdown(raceDate) {
+            const countdownElement = document.getElementById('countdown');
+            
+            // Update countdown every second
+            countdownInterval = setInterval(() => {
+                const now = new Date();
+                const timeDiff = raceDate - now;
+                
+                // If race is in the past, stop countdown
+                if (timeDiff <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.innerHTML = 'Race has started!';
+                    return;
+                }
+                
+                // Calculate days, hours, minutes, and seconds
+                const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+                
+                countdownElement.innerHTML = `Race starts in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+        
+        // Load full race schedule
+        async function loadRaceSchedule() {
+            const container = document.getElementById('raceSchedule');
+            container.innerHTML = '<div class="loading">Loading race schedule...</div>';
+            
+            try {
+                const data = await fetchF1Data('');
+                
+                if (!data || !data.MRData || !data.MRData.RaceTable || !data.MRData.RaceTable.Races || data.MRData.RaceTable.Races.length === 0) {
+                    container.innerHTML = `<div class="error-message">Race schedule not available for ${selectedSeason} season.</div>`;
+                    return;
+                }
+                
+                const races = data.MRData.RaceTable.Races;
+                const today = new Date();
+                
+                let html = `
+                    <table>
+                        <tr>
+                            <th>Round</th>
+                            <th>Grand Prix</th>
+                            <th>Circuit</th>
+                            <th>Date</th>
+                        </tr>
+                `;
+                
+                races.forEach(race => {
+                    const raceDate = new Date(`${race.date}T${race.time || '00:00:00Z'}`);
+                    const isPast = raceDate < today;
+                    
+                    // Format date to local date
+                    const formattedDate = raceDate.toLocaleDateString(undefined, { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                    
+                    html += `
+                        <tr style="${isPast ? 'opacity: 0.7;' : ''}">
+                            <td>${race.round}</td>
+                            <td>${race.raceName}</td>
+                            <td>${race.Circuit.circuitName}</td>
+                            <td>${formattedDate}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading race schedule:', error);
+                container.innerHTML = '<div class="error-message">Failed to load race schedule</div>';
+            }
+        }
     </script>
 </body>
 </html>
