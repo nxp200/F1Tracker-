@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formula 1 Race Tracker</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1c1c1c;
+      color: #fff;
+    }
+    header {
+      background: url('https://cdn.pixabay.com/photo/2017/08/10/03/27/formula-2616938_960_720.jpg') no-repeat center center/cover;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 4px #000;
+    }
+    main {
+      padding: 20px;
+    }
+    section {
+      margin-bottom: 30px;
+    }
+    h2 {
+      border-bottom: 1px solid #555;
+      padding-bottom: 5px;
+    }
+    .stat-list, .race-list {
+      list-style: none;
+      padding: 0;
+    }
+    .stat-list li, .race-list li {
+      background: #2e2e2e;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Formula 1 Race Tracker
+  </header>
+  <main>
+    <section>
+      <h2>Next Race</h2>
+      <ul class="race-list" id="next-race"></ul>
+    </section>
+    <section>
+      <h2>Driver Standings</h2>
+      <ul class="stat-list" id="driver-standings"></ul>
+    </section>
+    <section>
+      <h2>Constructor Standings</h2>
+      <ul class="stat-list" id="constructor-standings"></ul>
+    </section>
+  </main>  <script>
+    const formatDateToLocale = (utcDateStr) => {
+      const date = new Date(utcDateStr);
+      return date.toLocaleString();
+    };
+
+    async function fetchF1Data() {
+      const year = new Date().getFullYear();
+      const [nextRaceRes, driverStandingsRes, constructorStandingsRes] = await Promise.all([
+        fetch(`https://ergast.com/api/f1/current/next.json`),
+        fetch(`https://ergast.com/api/f1/${year}/driverStandings.json`),
+        fetch(`https://ergast.com/api/f1/${year}/constructorStandings.json`)
+      ]);
+
+      const nextRaceData = await nextRaceRes.json();
+      const driverData = await driverStandingsRes.json();
+      const constructorData = await constructorStandingsRes.json();
+
+      const race = nextRaceData.MRData.RaceTable.Races[0];
+      const driverStandings = driverData.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+      const constructorStandings = constructorData.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
+
+      const nextRaceEl = document.getElementById('next-race');
+      nextRaceEl.innerHTML = `
+        <li>
+          <strong>${race.raceName}</strong><br/>
+          Circuit: ${race.Circuit.circuitName}<br/>
+          Location: ${race.Circuit.Location.locality}, ${race.Circuit.Location.country}<br/>
+          Date & Time: ${formatDateToLocale(race.date + 'T' + race.time)}
+        </li>
+      `;
+
+      const driverListEl = document.getElementById('driver-standings');
+      driverStandings.forEach(driver => {
+        driverListEl.innerHTML += `
+          <li>#${driver.position} - ${driver.Driver.givenName} ${driver.Driver.familyName} (${driver.Constructors[0].name}) - ${driver.points} pts</li>
+        `;
+      });
+
+      const constructorListEl = document.getElementById('constructor-standings');
+      constructorStandings.forEach(constructor => {
+        constructorListEl.innerHTML += `
+          <li>#${constructor.position} - ${constructor.Constructor.name} - ${constructor.points} pts</li>
+        `;
+      });
+    }
+
+    fetchF1Data();
+  </script></body>
+</html>
