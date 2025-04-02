@@ -3,280 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formula 1 Season Tracker</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Formula 1 Season Stats</title>
     <style>
         :root {
-            --f1-red: #e10600;
-            --f1-dark: #15151e;
-            --f1-grey: #38383f;
-            --f1-light: #f8f8f8;
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --gray-800: #333333;
+            --gray-700: #424242;
+            --gray-600: #555555;
+            --gray-400: #888888;
+            --accent-red: #e10600;
+            --accent-red-dark: #b00500;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Titillium Web', 'Roboto', Arial, sans-serif;
         }
         
         body {
-            background-color: var(--f1-light);
-            color: var(--f1-dark);
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
             line-height: 1.6;
-        }
-        
-        .container {
+            padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
         }
         
         header {
-            background-color: var(--f1-red);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-red);
         }
         
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-        
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 700;
         }
         
         .logo img {
-            width: 50px;
-            height: auto;
+            height: 50px;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .season-selector {
+            display: flex;
+            align-items: center;
+        }
+        
+        .season-selector label {
+            margin-right: 10px;
+            font-weight: 600;
+        }
+        
+        select {
+            background-color: var(--gray-700);
+            color: var(--text-primary);
+            border: 1px solid var(--gray-600);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        select:hover {
+            background-color: var(--gray-600);
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--accent-red);
+            box-shadow: 0 0 0 2px rgba(225, 6, 0, 0.3);
         }
         
         main {
-            padding: 30px 0;
-        }
-        
-        .next-race {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .next-race h2 {
-            color: var(--f1-red);
-            margin-bottom: 10px;
-            font-size: 24px;
-        }
-        
-        .countdown {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-        }
-        
-        .countdown-item {
-            text-align: center;
-        }
-        
-        .countdown-number {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--f1-dark);
-        }
-        
-        .countdown-label {
-            font-size: 14px;
-            color: var(--f1-grey);
-        }
-        
-        .race-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .circuit-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 10px;
-            object-fit: cover;
-        }
-        
-        .race-details {
-            flex: 1;
-        }
-        
-        .race-name {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .race-date, .race-time, .race-circuit {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 5px;
-            color: var(--f1-grey);
-        }
-        
-        .race-date i, .race-time i, .race-circuit i {
-            color: var(--f1-red);
-            width: 20px;
-        }
-        
-        .sections {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 30px;
         }
         
-        @media (max-width: 768px) {
-            .sections {
-                grid-template-columns: 1fr;
+        @media (min-width: 768px) {
+            main {
+                grid-template-columns: 1fr 1fr;
             }
         }
         
-        .section {
-            background-color: white;
-            border-radius: 10px;
+        section {
+            background-color: var(--dark-surface);
+            border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
-        .section h2 {
-            color: var(--f1-red);
-            margin-bottom: 15px;
-            font-size: 20px;
+        h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-600);
+        }
+        
+        .countdown {
+            background-color: var(--gray-800);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .countdown h3 {
+            color: var(--accent-red);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .countdown-timer {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 15px 0;
+        }
+        
+        .next-race-info {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 10px;
         }
         
-        .section h2 i {
-            font-size: 18px;
+        .next-race-info p {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .next-race-info span:first-child {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        .race-schedule {
+            margin-top: 20px;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
         
         th, td {
-            padding: 10px;
+            padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--gray-700);
         }
         
         th {
-            font-weight: 600;
-            color: var(--f1-grey);
-        }
-        
-        .driver-row, .team-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .driver-position, .team-position {
-            width: 25px;
-            height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--f1-dark);
-            color: white;
-            border-radius: 50%;
-            font-size: 14px;
+            background-color: var(--gray-800);
+            color: var(--text-primary);
             font-weight: 600;
         }
         
-        .driver-flag, .team-logo {
-            width: 24px;
-            height: 16px;
-            border-radius: 2px;
-            object-fit: cover;
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        tr.completed {
+            color: var(--gray-400);
+        }
+        
+        tr.next-race {
+            background-color: rgba(225, 6, 0, 0.1);
+            border-left: 3px solid var(--accent-red);
+        }
+        
+        .driver-standings, .constructor-standings {
+            width: 100%;
+        }
+        
+        .position {
+            font-weight: 700;
+            color: var(--accent-red);
+            width: 30px;
+            text-align: center;
+        }
+        
+        .driver-name, .constructor-name {
+            display: flex;
+            align-items: center;
         }
         
         .team-color {
             width: 4px;
             height: 20px;
+            margin-right: 10px;
             border-radius: 2px;
-            margin-right: 5px;
         }
         
-        .race-card {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-            transition: transform 0.2s;
-        }
-        
-        .race-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-        
-        .race-card-flag {
-            width: 30px;
-            height: 20px;
-            object-fit: cover;
-            border-radius: 3px;
-        }
-        
-        .race-card-details {
-            flex: 1;
-        }
-        
-        .race-card-name {
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-        
-        .race-card-date {
-            font-size: 14px;
-            color: var(--f1-grey);
-        }
-        
-        .race-card-status {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-        
-        .status-upcoming {
-            background-color: #e6f7ea;
-            color: #2e7d32;
-        }
-        
-        .status-completed {
-            background-color: #edf2f7;
-            color: #718096;
-        }
-        
-        .status-next {
-            background-color: #fff8e1;
-            color: #f57f17;
+        .points {
+            font-weight: 700;
+            text-align: right;
         }
         
         .loader {
@@ -286,518 +224,506 @@
             height: 100px;
         }
         
-        .loader::after {
-            content: "";
-            width: 30px;
-            height: 30px;
-            border: 3px solid #eee;
+        .loader:after {
+            content: " ";
+            display: block;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border-top-color: var(--f1-red);
-            animation: spin 1s linear infinite;
+            border: 4px solid var(--accent-red);
+            border-color: var(--accent-red) transparent var(--accent-red) transparent;
+            animation: loader 1.2s linear infinite;
         }
         
-        @keyframes spin {
-            to {
+        @keyframes loader {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
                 transform: rotate(360deg);
             }
         }
         
-        footer {
-            background-color: var(--f1-dark);
-            color: white;
-            padding: 20px 0;
-            margin-top: 30px;
-        }
-        
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .footer-text {
-            font-size: 14px;
-        }
-        
-        .footer-links {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-        }
-        
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-        
         .error-message {
-            background-color: #ffebee;
-            color: #c62828;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            display: none;
+            color: var(--accent-red);
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .flag-icon {
+            width: 20px;
+            height: 15px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--gray-400);
+            font-size: 0.9rem;
+            padding: 20px 0;
+            border-top: 1px solid var(--gray-700);
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-content">
-            <div class="logo">
-                <img src="/api/placeholder/50/50" alt="F1 Logo" />
-                <h1>Formula 1 Season Tracker</h1>
-            </div>
+        <div class="logo">
+            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M25 0C11.2 0 0 11.2 0 25C0 38.8 11.2 50 25 50C38.8 50 50 38.8 50 25C50 11.2 38.8 0 25 0ZM25 8C31.1 8 36.2 11.5 38.7 16.7H11.3C13.8 11.5 18.9 8 25 8ZM8 25C8 21.3 9.3 17.9 11.3 15.3H38.7C40.7 17.9 42 21.3 42 25C42 34.4 34.4 42 25 42C15.6 42 8 34.4 8 25Z" fill="#E10600"/>
+            </svg>
+            <h1>F1 Season Stats</h1>
+        </div>
+        <div class="season-selector">
+            <label for="season">Season:</label>
+            <select id="season">
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025" selected>2025</option>
+            </select>
         </div>
     </header>
     
-    <main class="container">
-        <div class="error-message" id="errorMessage">
-            There was an error loading the data. Please try refreshing the page.
-        </div>
-        
-        <section class="next-race" id="nextRace">
+    <main>
+        <section id="next-race">
             <h2>Next Race</h2>
-            <div class="loader" id="nextRaceLoader"></div>
-            <div id="nextRaceContent" style="display: none;">
-                <!-- Content will be loaded here -->
+            <div id="next-race-content">
+                <div class="loader"></div>
             </div>
         </section>
         
-        <div class="sections">
-            <section class="section" id="driverStandings">
-                <h2><i class="fas fa-user-helmet-safety"></i> Driver Standings</h2>
-                <div class="loader" id="driversLoader"></div>
-                <div id="driversContent" style="display: none;">
-                    <table id="driversTable">
-                        <thead>
-                            <tr>
-                                <th>Pos</th>
-                                <th>Driver</th>
-                                <th>Team</th>
-                                <th>Points</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Content will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            
-            <section class="section" id="constructorStandings">
-                <h2><i class="fas fa-car-side"></i> Constructor Standings</h2>
-                <div class="loader" id="constructorsLoader"></div>
-                <div id="constructorsContent" style="display: none;">
-                    <table id="constructorsTable">
-                        <thead>
-                            <tr>
-                                <th>Pos</th>
-                                <th>Team</th>
-                                <th>Points</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Content will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
+        <section id="driver-standings-section">
+            <h2>Driver Standings</h2>
+            <div id="driver-standings-content">
+                <div class="loader"></div>
+            </div>
+        </section>
         
-        <section class="section" id="raceSchedule">
-            <h2><i class="fas fa-flag-checkered"></i> Race Schedule</h2>
-            <div class="loader" id="scheduleLoader"></div>
-            <div id="scheduleContent" style="display: none;">
-                <!-- Content will be loaded here -->
+        <section id="constructor-standings-section">
+            <h2>Constructor Standings</h2>
+            <div id="constructor-standings-content">
+                <div class="loader"></div>
+            </div>
+        </section>
+        
+        <section id="race-schedule-section">
+            <h2>Race Schedule</h2>
+            <div id="race-schedule-content">
+                <div class="loader"></div>
             </div>
         </section>
     </main>
     
     <footer>
-        <div class="container footer-content">
-            <div class="footer-text">
-                &copy; 2025 F1 Season Tracker - Not affiliated with Formula 1
-            </div>
-            <div class="footer-links">
-                <a href="https://www.formula1.com" target="_blank">Official F1</a>
-                <a href="https://ergast.com/mrd/" target="_blank">Data Source</a>
-            </div>
-        </div>
+        <p>Data provided by Ergast Developer API & F1 API | Not affiliated with Formula 1</p>
     </footer>
-    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.3.0/luxon.min.js"></script>
     <script>
-        // Utility Functions
-        function formatDate(dateString) {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString(undefined, options);
-        }
-        
-        function formatTime(dateString) {
-            const options = { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' };
-            return new Date(dateString).toLocaleTimeString(undefined, options);
-        }
-        
-        function showError(message) {
-            const errorElement = document.getElementById('errorMessage');
-            errorElement.textContent = message || 'There was an error loading the data. Please try refreshing the page.';
-            errorElement.style.display = 'block';
-        }
-        
-        // Calculate time remaining for countdown
-        function getTimeRemaining(endtime) {
-            const total = Date.parse(endtime) - Date.parse(new Date());
-            const seconds = Math.floor((total / 1000) % 60);
-            const minutes = Math.floor((total / 1000 / 60) % 60);
-            const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-            const days = Math.floor(total / (1000 * 60 * 60 * 24));
-            
-            return {
-                total,
-                days,
-                hours,
-                minutes,
-                seconds
+        // Team colors for the constructors
+        const teamColors = {
+            'red_bull': '#0600EF',
+            'ferrari': '#DC0000',
+            'mercedes': '#00D2BE',
+            'mclaren': '#FF8700',
+            'aston_martin': '#006F62',
+            'alpine': '#0090FF',
+            'williams': '#005AFF',
+            'alphatauri': '#2B4562',
+            'sauber': '#900000',
+            'haas': '#FFFFFF',
+            // Legacy teams (for older seasons)
+            'alfa': '#900000',
+            'racing_point': '#F596C8',
+            'renault': '#FFF500',
+            'toro_rosso': '#469BFF',
+            'force_india': '#F596C8'
+        };
+
+        // Country codes for flags
+        const countryCodes = {
+            'Australia': 'au',
+            'Austria': 'at',
+            'Azerbaijan': 'az',
+            'Bahrain': 'bh',
+            'Belgium': 'be',
+            'Brazil': 'br',
+            'Canada': 'ca',
+            'China': 'cn',
+            'Hungary': 'hu',
+            'Italy': 'it',
+            'Japan': 'jp',
+            'Mexico': 'mx',
+            'Miami': 'us',
+            'Monaco': 'mc',
+            'Netherlands': 'nl',
+            'Portugal': 'pt',
+            'Qatar': 'qa',
+            'Saudi Arabia': 'sa',
+            'Singapore': 'sg',
+            'Spain': 'es',
+            'United States': 'us',
+            'USA': 'us',
+            'Abu Dhabi': 'ae',
+            'United Arab Emirates': 'ae',
+            'UK': 'gb',
+            'Great Britain': 'gb',
+            'United Kingdom': 'gb',
+            'Emilia Romagna': 'it',
+            'Styria': 'at',
+            'Las Vegas': 'us',
+            'Miami': 'us',
+        };
+
+        // Get the nationality code
+        function getNationalityCode(nationality) {
+            const nationalityCodes = {
+                'British': 'gb',
+                'German': 'de',
+                'Dutch': 'nl',
+                'Spanish': 'es',
+                'Mexican': 'mx',
+                'French': 'fr',
+                'Italian': 'it',
+                'Australian': 'au',
+                'Canadian': 'ca',
+                'Japanese': 'jp',
+                'Finnish': 'fi',
+                'Danish': 'dk',
+                'Chinese': 'cn',
+                'Thai': 'th',
+                'American': 'us',
+                'Brazilian': 'br',
+                'Russian': 'ru',
+                'Polish': 'pl',
+                'Monegasque': 'mc',
+                'Belgian': 'be',
+                'Swiss': 'ch',
+                'New Zealander': 'nz',
+                'Argentinian': 'ar',
+                'Swedish': 'se',
+                'Venezuelan': 've',
+                'Hungarian': 'hu',
+                'Portuguese': 'pt'
             };
+            return nationalityCodes[nationality] || 'unknown';
         }
-        
-        // Initialize countdown timer
-        function initializeClock(id, endtime) {
-            const clock = document.getElementById(id);
-            const daysSpan = clock.querySelector('.days');
-            const hoursSpan = clock.querySelector('.hours');
-            const minutesSpan = clock.querySelector('.minutes');
-            const secondsSpan = clock.querySelector('.seconds');
-            
-            function updateClock() {
-                const t = getTimeRemaining(endtime);
-                
-                daysSpan.innerHTML = t.days;
-                hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
-                minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-                secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
-                
-                if (t.total <= 0) {
-                    clearInterval(timeinterval);
+
+        // Initialize variables
+        let currentSeason = document.getElementById('season').value;
+        let DateTime = luxon.DateTime;
+        let countdown;
+        let nextRaceDateTime;
+
+        // Function to fetch data from the Ergast API
+        async function fetchErgastData(endpoint) {
+            try {
+                const response = await fetch(`https://ergast.com/api/f1/${endpoint}.json`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return null;
+            }
+        }
+
+        // Format date to local timezone
+        function formatDate(dateStr, timeStr = '00:00:00Z') {
+            const datetime = DateTime.fromISO(`${dateStr}T${timeStr}`);
+            return datetime.toLocaleString(DateTime.DATETIME_FULL);
+        }
+
+        // Format date to local short format
+        function formatShortDate(dateStr) {
+            const datetime = DateTime.fromISO(dateStr);
+            return datetime.toLocaleString(DateTime.DATE_MED);
+        }
+
+        // Start countdown timer
+        function startCountdown(raceDateTime) {
+            if (countdown) {
+                clearInterval(countdown);
             }
             
-            updateClock();
-            const timeinterval = setInterval(updateClock, 1000);
-        }
-        
-        // Get team colors
-        function getTeamColor(teamName) {
-            const teamColors = {
-                'Red Bull': '#0600EF',
-                'Mercedes': '#00D2BE',
-                'Ferrari': '#DC0000',
-                'McLaren': '#FF8700',
-                'Aston Martin': '#006F62',
-                'Alpine': '#0090FF',
-                'Williams': '#005AFF',
-                'AlphaTauri': '#2B4562',
-                'Alfa Romeo': '#900000',
-                'Haas F1 Team': '#FFFFFF',
-                'RB': '#3671C6',
-                'Kick Sauber': '#52E252',
-                'VCARB': '#5E8FAA',
-                'Visa Cash App RB': '#5E8FAA',
-                'Stake F1 Team': '#52E252'
-            };
+            nextRaceDateTime = raceDateTime;
+            updateCountdown();
             
-            for (const team in teamColors) {
-                if (teamName.includes(team)) {
-                    return teamColors[team];
+            countdown = setInterval(updateCountdown, 1000);
+        }
+
+        // Update countdown timer
+        function updateCountdown() {
+            const now = DateTime.now();
+            const diff = nextRaceDateTime.diff(now, ['days', 'hours', 'minutes', 'seconds']).toObject();
+            
+            if (diff.days < 0) {
+                document.getElementById('countdown-timer').textContent = 'Race in progress or completed';
+                clearInterval(countdown);
+                return;
+            }
+            
+            document.getElementById('countdown-timer').textContent = 
+                `${Math.floor(diff.days)}d ${Math.floor(diff.hours)}h ${Math.floor(diff.minutes)}m ${Math.floor(diff.seconds)}s`;
+        }
+
+        // Load next race information
+        async function loadNextRace() {
+            const container = document.getElementById('next-race-content');
+            container.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const data = await fetchErgastData(`${currentSeason}`);
+                if (!data) {
+                    throw new Error('Failed to fetch race data');
                 }
-            }
-            
-            return '#cccccc'; // Default color
-        }
-        
-        // Get nationality flag
-        function getNationalityFlag(nationality) {
-            const countryFlags = {
-                'British': '🇬🇧',
-                'Dutch': '🇳🇱',
-                'Monaco': '🇲🇨',
-                'Mexican': '🇲🇽',
-                'Spanish': '🇪🇸',
-                'French': '🇫🇷',
-                'Australian': '🇦🇺',
-                'German': '🇩🇪',
-                'Canadian': '🇨🇦',
-                'Japanese': '🇯🇵',
-                'Chinese': '🇨🇳',
-                'Thai': '🇹🇭',
-                'Danish': '🇩🇰',
-                'Finnish': '🇫🇮',
-                'Italian': '🇮🇹',
-                'American': '🇺🇸',
-                'Brazilian': '🇧🇷',
-                'Argentine': '🇦🇷',
-                'Swiss': '🇨🇭'
-            };
-            
-            return countryFlags[nationality] || '🏁';
-        }
-        
-        // Get country flag by race location
-        function getCountryFlag(country) {
-            const countryFlags = {
-                'UK': '🇬🇧',
-                'Great Britain': '🇬🇧',
-                'United Kingdom': '🇬🇧',
-                'Netherlands': '🇳🇱',
-                'Italy': '🇮🇹',
-                'Monaco': '🇲🇨',
-                'Mexico': '🇲🇽',
-                'Spain': '🇪🇸',
-                'France': '🇫🇷',
-                'Australia': '🇦🇺',
-                'Germany': '🇩🇪',
-                'Canada': '🇨🇦',
-                'Japan': '🇯🇵',
-                'China': '🇨🇳',
-                'Thailand': '🇹🇭',
-                'Denmark': '🇩🇰',
-                'Finland': '🇫🇮',
-                'United States': '🇺🇸',
-                'USA': '🇺🇸',
-                'US': '🇺🇸',
-                'Brazil': '🇧🇷',
-                'Argentina': '🇦🇷',
-                'Switzerland': '🇨🇭',
-                'Azerbaijan': '🇦🇿',
-                'Bahrain': '🇧🇭',
-                'Saudi Arabia': '🇸🇦',
-                'Singapore': '🇸🇬',
-                'Belgium': '🇧🇪',
-                'Austria': '🇦🇹',
-                'Hungary': '🇭🇺',
-                'Qatar': '🇶🇦',
-                'Abu Dhabi': '🇦🇪',
-                'United Arab Emirates': '🇦🇪',
-                'UAE': '🇦🇪'
-            };
-            
-            return countryFlags[country] || '🏁';
-        }
-        
-        // Main API functions
-        async function fetchDriverStandings() {
-            try {
-                const response = await fetch('https://ergast.com/api/f1/current/driverStandings.json');
-                const data = await response.json();
-                const standings = data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
                 
-                const driversTableBody = document.querySelector('#driversTable tbody');
-                driversTableBody.innerHTML = '';
-                
-                standings.forEach(driver => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>
-                            <div class="driver-row">
-                                <div class="driver-position">${driver.position}</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="driver-row">
-                                <span>${getNationalityFlag(driver.Driver.nationality)}</span>
-                                <span>${driver.Driver.givenName} ${driver.Driver.familyName}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="team-row">
-                                <div class="team-color" style="background-color: ${getTeamColor(driver.Constructors[0].name)};"></div>
-                                <span>${driver.Constructors[0].name}</span>
-                            </div>
-                        </td>
-                        <td>${driver.points}</td>
-                    `;
-                    driversTableBody.appendChild(row);
-                });
-                
-                document.getElementById('driversLoader').style.display = 'none';
-                document.getElementById('driversContent').style.display = 'block';
-            } catch (error) {
-                console.error('Error fetching driver standings:', error);
-                showError('Failed to load driver standings data.');
-                document.getElementById('driversLoader').style.display = 'none';
-            }
-        }
-        
-        async function fetchConstructorStandings() {
-            try {
-                const response = await fetch('https://ergast.com/api/f1/current/constructorStandings.json');
-                const data = await response.json();
-                const standings = data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
-                
-                const constructorsTableBody = document.querySelector('#constructorsTable tbody');
-                constructorsTableBody.innerHTML = '';
-                
-                standings.forEach(constructor => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>
-                            <div class="team-row">
-                                <div class="team-position">${constructor.position}</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="team-row">
-                                <div class="team-color" style="background-color: ${getTeamColor(constructor.Constructor.name)};"></div>
-                                <span>${constructor.Constructor.name}</span>
-                            </div>
-                        </td>
-                        <td>${constructor.points}</td>
-                    `;
-                    constructorsTableBody.appendChild(row);
-                });
-                
-                document.getElementById('constructorsLoader').style.display = 'none';
-                document.getElementById('constructorsContent').style.display = 'block';
-            } catch (error) {
-                console.error('Error fetching constructor standings:', error);
-                showError('Failed to load constructor standings data.');
-                document.getElementById('constructorsLoader').style.display = 'none';
-            }
-        }
-        
-        async function fetchRaceSchedule() {
-            try {
-                const response = await fetch('https://ergast.com/api/f1/current.json');
-                const data = await response.json();
                 const races = data.MRData.RaceTable.Races;
+                const now = DateTime.now();
                 
-                // Find out which is the next race
-                const now = new Date();
-                let nextRaceIndex = -1;
-                
-                for (let i = 0; i < races.length; i++) {
-                    const raceDate = new Date(`${races[i].date}T${races[i].time || '00:00:00Z'}`);
-                    if (raceDate > now) {
-                        nextRaceIndex = i;
+                // Find the next race
+                let nextRace = null;
+                for (const race of races) {
+                    const raceDateTime = DateTime.fromISO(`${race.date}T${race.time || '00:00:00Z'}`);
+                    if (raceDateTime > now) {
+                        nextRace = race;
                         break;
                     }
                 }
                 
-                // Schedule content
-                const scheduleContent = document.getElementById('scheduleContent');
-                scheduleContent.innerHTML = '';
-                
-                races.forEach((race, index) => {
-                    const raceDate = new Date(`${race.date}T${race.time || '00:00:00Z'}`);
-                    const isPast = raceDate < now;
-                    const isNext = index === nextRaceIndex;
-                    
-                    let statusClass = '';
-                    let statusText = '';
-                    
-                    if (isPast) {
-                        statusClass = 'status-completed';
-                        statusText = 'Completed';
-                    } else if (isNext) {
-                        statusClass = 'status-next';
-                        statusText = 'Next Race';
-                    } else {
-                        statusClass = 'status-upcoming';
-                        statusText = 'Upcoming';
-                    }
-                    
-                    const raceCard = document.createElement('div');
-                    raceCard.className = 'race-card';
-                    raceCard.innerHTML = `
-                        <span class="race-card-flag">${getCountryFlag(race.Circuit.Location.country)}</span>
-                        <div class="race-card-details">
-                            <div class="race-card-name">${race.raceName}</div>
-                            <div class="race-card-date">${formatDate(race.date)}</div>
-                        </div>
-                        <span class="race-card-status ${statusClass}">${statusText}</span>
-                    `;
-                    
-                    scheduleContent.appendChild(raceCard);
-                });
-                
-                document.getElementById('scheduleLoader').style.display = 'none';
-                scheduleContent.style.display = 'block';
-                
-                // Next race content
-                if (nextRaceIndex !== -1) {
-                    const nextRace = races[nextRaceIndex];
-                    const raceDateTime = `${nextRace.date}T${nextRace.time || '00:00:00Z'}`;
-                    const nextRaceContent = document.getElementById('nextRaceContent');
-                    
-                    nextRaceContent.innerHTML = `
-                        <div class="race-info">
-                            <img class="circuit-image" src="/api/placeholder/120/120" alt="${nextRace.Circuit.circuitName}" />
-                            <div class="race-details">
-                                <div class="race-name">${nextRace.raceName}</div>
-                                <div class="race-circuit">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>${nextRace.Circuit.circuitName}, ${nextRace.Circuit.Location.locality}, ${nextRace.Circuit.Location.country}</span>
-                                </div>
-                                <div class="race-date">
-                                    <i class="far fa-calendar-alt"></i>
-                                    <span>${formatDate(nextRace.date)}</span>
-                                </div>
-                                <div class="race-time">
-                                    <i class="far fa-clock"></i>
-                                    <span>${formatTime(raceDateTime)}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="countdown" id="raceCountdown">
-                            <div class="countdown-item">
-                                <div class="countdown-number days">0</div>
-                                <div class="countdown-label">Days</div>
-                            </div>
-                            <div class="countdown-item">
-                                <div class="countdown-number hours">00</div>
-                                <div class="countdown-label">Hours</div>
-                            </div>
-                            <div class="countdown-item">
-                                <div class="countdown-number minutes">00</div>
-                                <div class="countdown-label">Minutes</div>
-                            </div>
-                            <div class="countdown-item">
-                                <div class="countdown-number seconds">00</div>
-                                <div class="countdown-label">Seconds</div>
-                            </div>
+                if (!nextRace) {
+                    container.innerHTML = `
+                        <div class="countdown">
+                            <h3>Season Complete</h3>
+                            <p>All races for the ${currentSeason} season have been completed.</p>
                         </div>
                     `;
-                    
-                    document.getElementById('nextRaceLoader').style.display = 'none';
-                    nextRaceContent.style.display = 'block';
-                    
-                    // Initialize countdown
-                    initializeClock('raceCountdown', raceDateTime);
-                } else {
-                    // No upcoming races
-                    const nextRaceContent = document.getElementById('nextRaceContent');
-                    nextRaceContent.innerHTML = `
-                        <p>No upcoming races scheduled. The season may have concluded.</p>
-                    `;
-                    document.getElementById('nextRaceLoader').style.display = 'none';
-                    nextRaceContent.style.display = 'block';
+                    return;
                 }
+                
+                // Get country code for flag
+                const countryName = nextRace.Circuit.Location.country;
+                const countryCode = countryCodes[countryName] || 'unknown';
+                
+                // Parse race date and time
+                const raceDateTime = DateTime.fromISO(`${nextRace.date}T${nextRace.time || '00:00:00Z'}`);
+                
+                // Create HTML for the next race
+                let html = `
+                    <div class="countdown">
+                        <h3>NEXT RACE COUNTDOWN</h3>
+                        <div id="countdown-timer" class="countdown-timer">Loading...</div>
+                    </div>
+                    <div class="next-race-info">
+                        <h3>
+                            <img class="flag-icon" src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/${countryCode}.svg" alt="${countryName} flag">
+                            ${nextRace.raceName}
+                        </h3>
+                        <p><span>Circuit:</span> <span>${nextRace.Circuit.circuitName}</span></p>
+                        <p><span>Location:</span> <span>${nextRace.Circuit.Location.locality}, ${nextRace.Circuit.Location.country}</span></p>
+                        <p><span>Date:</span> <span>${formatDate(nextRace.date, nextRace.time)}</span></p>
+                `;
+                
+                // Add qualifying info if available
+                if (nextRace.Qualifying) {
+                    const qualifyingDateTime = DateTime.fromISO(`${nextRace.Qualifying.date}T${nextRace.Qualifying.time || '00:00:00Z'}`);
+                    html += `<p><span>Qualifying:</span> <span>${formatDate(nextRace.Qualifying.date, nextRace.Qualifying.time)}</span></p>`;
+                }
+                
+                // Add sprint info if available
+                if (nextRace.Sprint) {
+                    const sprintDateTime = DateTime.fromISO(`${nextRace.Sprint.date}T${nextRace.Sprint.time || '00:00:00Z'}`);
+                    html += `<p><span>Sprint Race:</span> <span>${formatDate(nextRace.Sprint.date, nextRace.Sprint.time)}</span></p>`;
+                }
+                
+                html += `</div>`;
+                container.innerHTML = html;
+                
+                // Start the countdown timer
+                startCountdown(raceDateTime);
+                
             } catch (error) {
-                console.error('Error fetching race schedule:', error);
-                showError('Failed to load race schedule data.');
-                document.getElementById('scheduleLoader').style.display = 'none';
-                document.getElementById('nextRaceLoader').style.display = 'none';
+                console.error('Error loading next race:', error);
+                container.innerHTML = '<div class="error-message">Failed to load next race information.</div>';
             }
         }
-        
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchDriverStandings();
-            fetchConstructorStandings();
-            fetchRaceSchedule();
+
+        // Load driver standings
+        async function loadDriverStandings() {
+            const container = document.getElementById('driver-standings-content');
+            container.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const data = await fetchErgastData(`${currentSeason}/driverStandings`);
+                if (!data) {
+                    throw new Error('Failed to fetch driver standings');
+                }
+                
+                const standings = data.MRData.StandingsTable.StandingsLists[0]?.DriverStandings || [];
+                
+                if (standings.length === 0) {
+                    container.innerHTML = '<div class="error-message">No driver standings available for this season yet.</div>';
+                    return;
+                }
+                
+                let html = '<table class="driver-standings">';
+                html += '<tr><th>Pos</th><th>Driver</th><th>Team</th><th>Points</th></tr>';
+                
+                for (const driver of standings) {
+                    const constructor = driver.Constructors[0];
+                    const constructorName = constructor.constructorId.toLowerCase();
+                    const teamColor = teamColors[constructorName] || '#FFFFFF';
+                    const nationalityCode = getNationalityCode(driver.Driver.nationality);
+                    
+                    html += `
+                        <tr>
+                            <td class="position">${driver.position}</td>
+                            <td class="driver-name">
+                                <div class="team-color" style="background-color: ${teamColor}"></div>
+                                <img class="flag-icon" src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/${nationalityCode}.svg" alt="${driver.Driver.nationality} flag">
+                                ${driver.Driver.givenName} ${driver.Driver.familyName}
+                            </td>
+                            <td>${constructor.name}</td>
+                            <td class="points">${driver.points}</td>
+                        </tr>
+                    `;
+                }
+                
+                html += '</table>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading driver standings:', error);
+                container.innerHTML = '<div class="error-message">Failed to load driver standings.</div>';
+            }
+        }
+
+        // Load constructor standings
+        async function loadConstructorStandings() {
+            const container = document.getElementById('constructor-standings-content');
+            container.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const data = await fetchErgastData(`${currentSeason}/constructorStandings`);
+                if (!data) {
+                    throw new Error('Failed to fetch constructor standings');
+                }
+                
+                const standings = data.MRData.StandingsTable.StandingsLists[0]?.ConstructorStandings || [];
+                
+                if (standings.length === 0) {
+                    container.innerHTML = '<div class="error-message">No constructor standings available for this season yet.</div>';
+                    return;
+                }
+                
+                let html = '<table class="constructor-standings">';
+                html += '<tr><th>Pos</th><th>Team</th><th>Points</th></tr>';
+                
+                for (const constructor of standings) {
+                    const constructorName = constructor.Constructor.constructorId.toLowerCase();
+                    const teamColor = teamColors[constructorName] || '#FFFFFF';
+                    const nationalityCode = countryCodes[constructor.Constructor.nationality] || 'unknown';
+                    
+                    html += `
+                        <tr>
+                            <td class="position">${constructor.position}</td>
+                            <td class="constructor-name">
+                                <div class="team-color" style="background-color: ${teamColor}"></div>
+                                <img class="flag-icon" src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/${nationalityCode}.svg" alt="${constructor.Constructor.nationality} flag">
+                                ${constructor.Constructor.name}
+                            </td>
+                            <td class="points">${constructor.points}</td>
+                        </tr>
+                    `;
+                }
+                
+                html += '</table>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading constructor standings:', error);
+                container.innerHTML = '<div class="error-message">Failed to load constructor standings.</div>';
+            }
+        }
+
+        // Load race schedule
+        async function loadRaceSchedule() {
+            const container = document.getElementById('race-schedule-content');
+            container.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const data = await fetchErgastData(`${currentSeason}`);
+                if (!data) {
+                    throw new Error('Failed to fetch race schedule');
+                }
+                
+                const races = data.MRData.RaceTable.Races;
+                
+                if (races.length === 0) {
+                    container.innerHTML = '<div class="error-message">No race schedule available for this season yet.</div>';
+                    return;
+                }
+                
+                let html = '<table class="race-schedule">';
+                html += '<tr><th>Round</th><th>Race</th><th>Date</th><th>Circuit</th></tr>';
+                
+                const now = DateTime.now();
+                let nextRaceFound = false;
+                
+                for (const race of races) {
+                    const raceDateTime = DateTime.fromISO(`${race.date}T${race.time || '00:00:00Z'}`);
+                    const isPast = raceDateTime < now;
+                    const isNextRace = !isPast && !nextRaceFound;
+                    
+                    if (isNextRace) {
+                        nextRaceFound = true;
+                    }
+                    
+                    // Get country code for flag
+                    const countryName = race.Circuit.Location.country;
+                    const countryCode = countryCodes[countryName] || 'unknown';
+                    
+                    html += `
+                        <tr class="${isPast ? 'completed' : ''} ${isNextRace ? 'next-race' : ''}">
+                            <td>${race.round}</td>
+                            <td>
+                                <img class="flag-icon" src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/${countryCode}.svg" alt="${countryName} flag">
+                                ${race.raceName}
+                            </td>
+                            <td>${formatShortDate(race.date)}</td>
+                            <td>${race.Circuit.circuitName}</td>
+                        </tr>
+                    `;
+                }
+                
+                html += '</table>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading race schedule:', error);
+                container.innerHTML = '<div class="error-message">Failed to load race schedule.</div>';
+            }
+        }
+
+        // Load all data
+        function loadAllData() {
+            loadNextRace();
+            loadDriverStandings();
+            loadConstructorStandings();
+            loadRaceSchedule();
+        }
+
+        // Event listener for season selection
+        document.getElementById('season').addEventListener('change', function() {
+            currentSeason = this.value;
+            loadAllData();
         });
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadAllData);
     </script>
 </body>
 </html>
